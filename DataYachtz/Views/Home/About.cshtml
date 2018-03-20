@@ -1,0 +1,13 @@
+﻿@model IEnumerable<DataYachtz.Models.UserCSVModels>
+@{
+    ViewBag.Title = "About";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<ul>
+    @foreach (var UserCSVModels in Model)
+    {
+        <li>@UserCSVModels.Email (@UserCSVModels.CSV)</li>
+    }
+</ul>

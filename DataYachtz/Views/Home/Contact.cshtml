@@ -1,0 +1,16 @@
+﻿@using MVCGrid.Web
+@using MVCGrid.Web.Models
+<div class="panel panel-default">
+    <div class="panel-body">
+
+        @Html.Partial("_MVCGridToolbar", new MVCGridToolbarModel()
+        {
+            MVCGridName = "UsageExample",
+            PageSize = true,
+            ColumnVisibility = true,
+            Export = true,
+            GlobalSearch = true
+        })
+        @Html.MVCGrid("UsageExample")
+    </div>
+</div>
