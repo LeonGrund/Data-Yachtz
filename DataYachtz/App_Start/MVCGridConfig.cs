@@ -30,13 +30,13 @@ namespace DataYachtz
                         .WithValueTemplate("<a href='{Value}'>{Model.Id}</a>", false)
                         .WithPlainTextValueExpression(p => p.Id.ToString());
                     cols.Add().WithColumnName("Email")
-                        .WithHeaderText("EMAIL")
+                        .WithHeaderText("Email")
                         .WithVisibility(true, true)
                         .WithValueExpression(i => i.Email); // use the Value Expression to return the cell text for this column
                     cols.Add().WithColumnName("CSV")
                         .WithHeaderText("CSV")
                         .WithVisibility(true, true)
-                        .WithValueExpression(i => i.Email);
+                        .WithValueExpression(i => i.CSV);
                 })
                 .WithRetrieveDataMethod((context) =>
                 {
