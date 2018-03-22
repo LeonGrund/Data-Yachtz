@@ -7,11 +7,10 @@ namespace DataYachtz
     using System.Web.Mvc;
     using System.Linq;
     using System.Collections.Generic;
-
+    using Models;
     using MVCGrid.Models;
     using MVCGrid.Web;
     using System.Data.Entity;
-    using DataYachtz.Models;
     using DataYachtz.Controllers;
 
     public static class MVCGridConfig 
