@@ -21,6 +21,7 @@ namespace DataYachtz.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<UserCSVModels> UserCSVs { get; set; }
+        //public DbSet<BulkImportDetailsModel> BulkImportDetails { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

@@ -26,41 +26,40 @@ namespace DataYachtz.Controllers
         public ActionResult About()
         {
             var users = _dbContext.UserCSVs.ToList();
+            //var test = _dbContext.BulkImportDetails.ToList();
             return View(users);
         }
 
+        /*
         // CONVERT DataTable to List
-        private static List<T> ConvertDataTable<T>(DataTable dt)
+        private static List<string> ConvertDataTable(DataTable dt)
         {
-            List<T> data = new List<T>();
-            foreach (DataRow row in dt.Rows)
-            {
-                T item = GetItem<T>(row);
-                data.Add(item);
-            }
-            return data;
-        }
-        private static T GetItem<T>(DataRow dr)
-        {
-            Type temp = typeof(T);
-            T obj = Activator.CreateInstance<T>();
+            List<DataRow> RowList = dt.AsEnumerable().ToList();
 
-            foreach (DataColumn column in dr.Table.Columns)
-            {
-                foreach (PropertyInfo pro in temp.GetProperties())
+            //List<List<string>> data = new List<List<string>>();
+
+            List<string> tempRow = new List<string>();
+
+            foreach (DataRow row in RowList)
+              
+                foreach (var col in row.ToString())
                 {
-                    if (pro.Name == column.ColumnName)
-                        pro.SetValue(obj, dr[column.ColumnName], null);
-                    else
-                        continue;
+                    tempRow.Add(col.ToString());
                 }
-            }
-            return obj;
+
+            //data.Add(tempRow);
+        
+           
+
+            return tempRow;
         }
+       */
 
 
         public ActionResult Upload()
         {
+           // var ret = new List<string>();
+
             return View();
         }
 
@@ -79,8 +78,8 @@ namespace DataYachtz.Controllers
                         Stream stream = upload.InputStream;
                         DataTable csvDataTable = new DataTable();
 
-                        UserCSVModels csvData = new UserCSVModels();    //CREATE MODEL
-                        var csvDataList = new List<string>();
+                        UserCSVModels csvDataModel = new UserCSVModels();    //CREATE MODEL
+                        var csvDataList = new List<string>();           // List for the model
 
                         using (CsvReader csvReader =
                             new CsvReader(new StreamReader(stream), true))
@@ -89,9 +88,10 @@ namespace DataYachtz.Controllers
                          
                         }
 
+                        //csvDataList = ConvertDataTable(csvDataTable);   //convert to List
+                        csvDataModel.DataList = csvDataList;                    // store in model
 
-                      //  csvData.CsvList = ConvertDataTable<CsvModel>(csvData.CsvTable);
-                       // CsvList = ConvertDataTable<CsvModel>(csvData.CsvTable);
+          
 
 
                         return View(csvDataTable);

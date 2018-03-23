@@ -7,6 +7,11 @@ namespace DataYachtz.Models
 {
     public class UserCSVModels
     {
+        public UserCSVModels()
+        {
+            DataList = new List<string>();
+        }
+
         public List<string> DataList{ get; set; }
         public int Id { get; set; }
         public string Email { get; set; }
