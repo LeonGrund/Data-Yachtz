@@ -22,5 +22,6 @@ namespace MVCGrid.Web.Models
         public bool ColumnVisibility { get; set; }
         public bool Export { get; set; }
         public bool GlobalSearch { get; set; }
+        public string CSVName { get; set; }
     }
 }

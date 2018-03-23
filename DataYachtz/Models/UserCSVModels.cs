@@ -5,12 +5,14 @@ using System.Web;
 
 namespace DataYachtz.Models
 {
-    public class UserCSVModels
+    //TODO: Auto gen new model for each csv db table added
+    public class UserCSVModel
     {
-        public UserCSVModels()
+        /*
+        public UserCSVModel()
         {
             DataList = new List<string>();
-        }
+        }*/
 
         public List<string> DataList{ get; set; }
         public int Id { get; set; }

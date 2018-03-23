@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DataYachtz.Models.UserCSVModels>
+﻿@model IEnumerable<DataYachtz.Models.UserCSVModel>
 @{
     ViewBag.Title = "About";
 }
@@ -6,8 +6,8 @@
 <h3>@ViewBag.Message</h3>
 
 <ul>
-    @foreach (var UserCSVModels in Model)
+    @foreach (var user in Model)
     {
-        <li>@UserCSVModels.Email (@UserCSVModels.CSV)</li>
+        <li>@user.Email (@user.CSV)</li>
     }
 </ul>

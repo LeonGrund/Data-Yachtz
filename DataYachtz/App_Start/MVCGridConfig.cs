@@ -15,10 +15,13 @@ namespace DataYachtz
 
     public static class MVCGridConfig 
     {
+
+        private static ApplicationDbContext _dbContext;
+
         public static void RegisterGrids()
         {
             
-            MVCGridDefinitionTable.Add("UsageExample", new MVCGridBuilder<UserCSVModels>()
+            MVCGridDefinitionTable.Add("UsageExample", new MVCGridBuilder<UserCSVModel>()
                 .WithAuthorizationType(AuthorizationType.AllowAnonymous)
                 .WithSorting(sorting: true, defaultSortColumn: "Id", defaultSortDirection: SortDirection.Dsc)
                 .WithPaging(paging: true, itemsPerPage: 10, allowChangePageSize: true, maxItemsPerPage: 100)
@@ -43,18 +46,30 @@ namespace DataYachtz
                     // Use Entity Framework, a module from your IoC Container, or any other method.
                     // Return QueryResult object containing IEnumerable<YouModelItem>
                     var options = context.QueryOptions;
-                    int totalRecords;
-                    var repo = HomeController._dbContext.UserCSVs.ToList();   //DependencyResolver.Current.GetService<UserCSVModels>();
+
+                    _dbContext = new ApplicationDbContext();
+
+
+                    var repo = _dbContext.UserCSVDatabase.ToList();   //DependencyResolver.Current.GetService<UserCSVModels>();
+                   
+
+                    UserCSVModel fakeUser = new UserCSVModel();
+                    fakeUser.Email = "Fake@fake.de";
+                    fakeUser.CSV = "fale.csv";
+                    repo.Add(fakeUser);
+
+                    int totalRecords = repo.Count();
+
                     string globalSearch = options.GetAdditionalQueryOptionString("search");
                     string sortColumn = options.GetSortColumnData<string>();
                     var items = repo;//.GetData(out totalRecords, globalSearch, options.GetLimitOffset(), options.GetLimitRowcount(),
                         //sortColumn, options.SortDirection == SortDirection.Dsc);
                     
-                    return new QueryResult<UserCSVModels>()
+                    return new QueryResult<UserCSVModel>()
                     {
                         //Items = HomeController._dbContext.UserCSVs.ToList(),
                         Items = items,
-                        TotalRecords = 3 //totalRecords
+                        TotalRecords = totalRecords
 
                         //TotalRecords = 0 // if paging is enabled, return the total number of records of all pages
                     };

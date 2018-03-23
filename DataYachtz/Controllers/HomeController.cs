@@ -15,7 +15,7 @@ namespace DataYachtz.Controllers
 {
     public class HomeController : Controller
     {
-        public static ApplicationDbContext _dbContext;
+        private ApplicationDbContext _dbContext;
 
         public HomeController()
         {
@@ -25,7 +25,7 @@ namespace DataYachtz.Controllers
         // GET: UserCSVs
         public ActionResult About()
         {
-            var users = _dbContext.UserCSVs.ToList();
+            var users = _dbContext.UserCSVDatabase.ToList();
             //var test = _dbContext.BulkImportDetails.ToList();
             return View(users);
         }
@@ -78,7 +78,7 @@ namespace DataYachtz.Controllers
                         Stream stream = upload.InputStream;
                         DataTable csvDataTable = new DataTable();
 
-                        UserCSVModels csvDataModel = new UserCSVModels();    //CREATE MODEL
+                        UserCSVModel csvDataModel = new UserCSVModel();    //CREATE MODEL
                         var csvDataList = new List<string>();           // List for the model
 
                         using (CsvReader csvReader =
@@ -89,7 +89,7 @@ namespace DataYachtz.Controllers
                         }
 
                         //csvDataList = ConvertDataTable(csvDataTable);   //convert to List
-                        csvDataModel.DataList = csvDataList;                    // store in model
+                       // csvDataModel.DataList = csvDataList;                    // store in model
 
           
 
