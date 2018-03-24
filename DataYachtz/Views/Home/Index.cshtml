@@ -1,4 +1,4 @@
-﻿
+﻿@model IEnumerable<DataYachtz.Models.UserCSVModel>
 @{
     ViewBag.Title = "Home Page";
 }
@@ -6,6 +6,15 @@
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
 
+<ul>
+    @if (Model != null)
+    {
+        foreach (var user in Model)
+        {
+            <li>@user.Email (@user.CSV)</li>
+         }
+    }
+</ul>
 
 <div class="jumbotron">
     <h1>ASP.NET</h1>

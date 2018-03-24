@@ -10,6 +10,8 @@ using System.Web;
 using System.Web.Mvc;
 using DataYachtz.Models;
 using LumenWorks.Framework.IO.Csv;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace DataYachtz.Controllers
 {
@@ -58,8 +60,6 @@ namespace DataYachtz.Controllers
 
         public ActionResult Upload()
         {
-           // var ret = new List<string>();
-
             return View();
         }
 
@@ -110,11 +110,25 @@ namespace DataYachtz.Controllers
             return View();
         }
 
-
+        
         public ActionResult Index()
         {
             return View();
         }
+        
+        // HOW TO ADD ROW TO DB TABLE
+        /*
+        public ActionResult Index(UserCSVModel customer)
+        {
+            using (ApplicationDbContext entities = new ApplicationDbContext())
+            {
+                entities.UserCSVDatabase.Add(customer);
+                entities.SaveChanges();
+            }
+
+            var users = _dbContext.UserCSVDatabase.ToList(); 
+            return View(users);
+        }*/
 
         public ActionResult Contact()
         {

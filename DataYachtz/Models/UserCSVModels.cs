@@ -14,7 +14,7 @@ namespace DataYachtz.Models
             DataList = new List<string>();
         }*/
 
-        public List<string> DataList{ get; set; }
+        //public List<string> DataList{ get; set; }
         public int Id { get; set; }
         public string Email { get; set; }
         public string CSV { get; set; }
