@@ -21,24 +21,24 @@ namespace DataYachtz
         public static void RegisterGrids()
         {
             
-            MVCGridDefinitionTable.Add("UsageExample", new MVCGridBuilder<UserCSVModel>()
+            MVCGridDefinitionTable.Add("UsageExample", new MVCGridBuilder<ICSVModel>()
                 .WithAuthorizationType(AuthorizationType.AllowAnonymous)
                 .WithSorting(sorting: true, defaultSortColumn: "Id", defaultSortDirection: SortDirection.Dsc)
                 .WithPaging(paging: true, itemsPerPage: 10, allowChangePageSize: true, maxItemsPerPage: 100)
                 .WithAdditionalQueryOptionNames("search")
                 .AddColumns(cols =>
                 {
-                    cols.Add("Id").WithValueExpression((p, c) => c.UrlHelper.Action("detail", "demo", new { id = p.Id }))
+                    cols.Add("Id").WithValueExpression((p, c) => c.UrlHelper.Action("detail", "demo", new { id = (int)p.GetProperty("Id") }))
                         .WithValueTemplate("<a href='{Value}'>{Model.Id}</a>", false)
-                        .WithPlainTextValueExpression(p => p.Id.ToString());
+                        .WithPlainTextValueExpression(p => ((int)p.GetProperty("Id")).ToString());
                     cols.Add().WithColumnName("Email")
                         .WithHeaderText("Email")
                         .WithVisibility(true, true)
-                        .WithValueExpression(i => i.Email); // use the Value Expression to return the cell text for this column
+                        .WithValueExpression(i => (string)i.GetProperty("Email")); // use the Value Expression to return the cell text for this column
                     cols.Add().WithColumnName("CSV")
                         .WithHeaderText("CSV")
                         .WithVisibility(true, true)
-                        .WithValueExpression(i => i.CSV);
+                        .WithValueExpression(i => (string)i.GetProperty("CSV"));
                 })
                 .WithRetrieveDataMethod((context) =>
                 {
@@ -49,23 +49,21 @@ namespace DataYachtz
 
                     _dbContext = new ApplicationDbContext();
 
-
+                  
                     var repo = _dbContext.UserCSVDatabase.ToList();   //DependencyResolver.Current.GetService<UserCSVModels>();
-                   
 
-                    UserCSVModel fakeUser = new UserCSVModel();
-                    fakeUser.Email = "Fake@fake.de";
-                    fakeUser.CSV = "fale.csv";
-                    repo.Add(fakeUser);
+
+              
+                   
 
                     int totalRecords = repo.Count();
 
                     string globalSearch = options.GetAdditionalQueryOptionString("search");
                     string sortColumn = options.GetSortColumnData<string>();
-                    var items = repo;//.GetData(out totalRecords, globalSearch, options.GetLimitOffset(), options.GetLimitRowcount(),
-                        //sortColumn, options.SortDirection == SortDirection.Dsc);
-                    
-                    return new QueryResult<UserCSVModel>()
+                    var items = repo;
+                    //var test = _dbContext.UserCSVDatabase.GetData(out totalRecords, globalSearch, options.GetLimitOffset(), options.GetLimitRowcount(), sortColumn, options.SortDirection == SortDirection.Dsc);
+
+                    return new QueryResult<ICSVModel>()
                     {
                         //Items = HomeController._dbContext.UserCSVs.ToList(),
                         Items = items,

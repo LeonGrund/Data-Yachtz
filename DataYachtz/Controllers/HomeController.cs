@@ -28,7 +28,6 @@ namespace DataYachtz.Controllers
         public ActionResult About()
         {
             var users = _dbContext.UserCSVDatabase.ToList();
-            //var test = _dbContext.BulkImportDetails.ToList();
             return View(users);
         }
 
@@ -79,7 +78,7 @@ namespace DataYachtz.Controllers
                         DataTable csvDataTable = new DataTable();
 
                         UserCSVModel csvDataModel = new UserCSVModel();    //CREATE MODEL
-                        var csvDataList = new List<string>();           // List for the model
+                        //var csvDataList = new List<string>();           // List for the model
 
                         using (CsvReader csvReader =
                             new CsvReader(new StreamReader(stream), true))
@@ -88,11 +87,20 @@ namespace DataYachtz.Controllers
                          
                         }
 
-                        //csvDataList = ConvertDataTable(csvDataTable);   //convert to List
-                       // csvDataModel.DataList = csvDataList;                    // store in model
+                        string[] csvColNames = csvDataTable.Columns.Cast<DataColumn>()
+                             .Select(x => x.ColumnName)
+                             .ToArray();
 
-          
 
+
+                        var ddd =  DataTableToDatabase(csvDataTable, csvDataModel, csvColNames);
+                        AddRowsToTable(ddd);
+
+                        using (ApplicationDbContext entities = new ApplicationDbContext())
+                        {
+                            entities.UserCSVDatabase.Add(csvDataModel);
+                            entities.SaveChanges();
+                        }
 
                         return View(csvDataTable);
                     }
@@ -110,7 +118,40 @@ namespace DataYachtz.Controllers
             return View();
         }
 
-        
+        public List<ICSVModel> DataTableToDatabase(DataTable table, ICSVModel model, String[] colNames)
+        {
+            var retModelList = new List<ICSVModel>();
+            
+            int colNo = 0;
+            
+            foreach (var row in table.Rows)
+            {              
+                var _model = model.GetNew();
+                foreach (var colName in colNames)
+                {
+                    _model.SetProperty(colName, table.Rows[colNo][colName].ToString());       
+                }
+                colNo++;
+                retModelList.Add(_model);
+            }
+
+            return retModelList;
+        }
+
+        public void AddRowsToTable(List<ICSVModel> modelList)
+        {
+            foreach (var model in modelList)
+            {
+                using (var entities = new ApplicationDbContext()) // model.GetDbContext()
+                {
+                    entities.UserCSVDatabase.Add((UserCSVModel)model);
+                    entities.SaveChanges();
+                }
+            }
+          
+        }
+
+
         public ActionResult Index()
         {
             return View();
