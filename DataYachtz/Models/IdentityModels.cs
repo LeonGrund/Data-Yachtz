@@ -21,7 +21,7 @@ namespace DataYachtz.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         //TODO: Auto gen code for new csv db table added
-        public DbSet<UserCSVModel> UserCSVDatabase { get; set; }
+        public DbSet<Product> UserCSVDatabase { get; set; }
        
 
         public ApplicationDbContext()

@@ -196,6 +196,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\MVCGridConfig - Copy.cs" />
     <Compile Include="App_Start\MVCGridConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
@@ -212,6 +213,10 @@
     <Compile Include="Migrations\201803200508501_AddUserCSVsTable.cs" />
     <Compile Include="Migrations\201803200508501_AddUserCSVsTable.Designer.cs">
       <DependentUpon>201803200508501_AddUserCSVsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804110313220_webGrid.cs" />
+    <Compile Include="Migrations\201804110313220_webGrid.Designer.cs">
+      <DependentUpon>201804110313220_webGrid.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -287,6 +292,8 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_MVCGridToolbar.cshtml" />
     <Content Include="Views\Home\Upload.cshtml" />
+    <Content Include="Views\Home\PublicUpload.cshtml" />
+    <Content Include="Views\Home\WebGrid.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -308,6 +315,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803200508501_AddUserCSVsTable.resx">
       <DependentUpon>201803200508501_AddUserCSVsTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804110313220_webGrid.resx">
+      <DependentUpon>201804110313220_webGrid.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

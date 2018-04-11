@@ -253,3 +253,4 @@ C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\DataYachtz\obj\Debug\DataYach
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\DataYachtz\bin\LumenWorks.Framework.IO.dll
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\DataYachtz\bin\LumenWorks.Framework.IO.pdb
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\DataYachtz\bin\LumenWorks.Framework.IO.xml
+C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\DataYachtz\obj\Debug\DataYachtz.Migrations.webGrid.resources

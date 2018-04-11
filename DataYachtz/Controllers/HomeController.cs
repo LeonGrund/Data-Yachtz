@@ -9,6 +9,8 @@ using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using DataYachtz.Models;
+using MVCGrid.Web.Models;
+using DataYachtz;
 using LumenWorks.Framework.IO.Csv;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -27,41 +29,16 @@ namespace DataYachtz.Controllers
         // GET: UserCSVs
         public ActionResult About()
         {
-            var users = _dbContext.UserCSVDatabase.ToList();
-            return View(users);
+           // var users = _dbContext.UserCSVDatabase.ToList();
+            return View();
         }
-
-        /*
-        // CONVERT DataTable to List
-        private static List<string> ConvertDataTable(DataTable dt)
-        {
-            List<DataRow> RowList = dt.AsEnumerable().ToList();
-
-            //List<List<string>> data = new List<List<string>>();
-
-            List<string> tempRow = new List<string>();
-
-            foreach (DataRow row in RowList)
-              
-                foreach (var col in row.ToString())
-                {
-                    tempRow.Add(col.ToString());
-                }
-
-            //data.Add(tempRow);
-        
-           
-
-            return tempRow;
-        }
-       */
-
 
         public ActionResult Upload()
         {
             return View();
         }
 
+        /*
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Upload(HttpPostedFileBase upload)
@@ -142,21 +119,119 @@ namespace DataYachtz.Controllers
         {
             foreach (var model in modelList)
             {
-                using (var entities = new ApplicationDbContext()) // model.GetDbContext()
+                using (var entities = model.GetDbContext()) //new ApplicationDbContext()) //new ApplicationDbContext())            
                 {
-                    entities.UserCSVDatabase.Add((UserCSVModel)model);
+                    var entitiesOld = new ApplicationDbContext();
+                    entitiesOld.UserCSVDatabase.Add((UserCSVModel)model);
+
+                    entities.db.Add((UserCSVModel)model);
                     entities.SaveChanges();
                 }
             }
           
         }
+        */
+        
+        public ActionResult PublicUpload()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult PublicUpload(HttpPostedFileBase upload)
+        {
+            if (ModelState.IsValid)
+            {
+
+                if (upload != null && upload.ContentLength > 0)
+                {
+
+                    if (upload.FileName.EndsWith(".csv"))
+                    {
+                        Stream stream = upload.InputStream;
+                        DataTable csvDataTable = new DataTable();
+
+                        PublicUserCSVModel model = new PublicUserCSVModel();
+                        model.Name = upload.FileName;
+
+                       
+                        using (CsvReader csvReader =
+                            new CsvReader(new StreamReader(stream), true))
+                        {
+                            csvDataTable.Load(csvReader);
+
+                        }
+
+                        string[] csvColNames = csvDataTable.Columns.Cast<DataColumn>()
+                             .Select(x => x.ColumnName)
+                             .ToArray();
+
+                        var table = new List<List<string>>(); // each list is a col with [0]=name of col
+                        foreach (var colName in csvColNames)
+                        {                  
+                            string[] ColItems = csvDataTable.AsEnumerable()
+                            .Select(s => s.Field<string>(colName)).ToArray<string>();
+
+                            var ret = ColItems.ToList();
+                            ret.Insert(0, colName);
+
+                            table.Add(ret);
+                        }
+
+                        model.Table = table;
+
+                        //  var csvGrid = new MVCGridConfig();
+                        //csvGrid.Model = model;     // set model in grid class
+                        //var works = DataYachtz.MVCGridConfig.Model.GetList(2);
+                        //  csvGrid.RegisterGrids();
+                        DataYachtz.MVCGridConfig.Model = model;
+                        var grid = new MVCGridToolbarModel(model.Name);
+
+                        return View("_MVCGridToolbar", grid);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("File", "This file format is not supported");
+                        return View();
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("File", "Please Upload Your file");
+                }
+            }
+            return View();
+        }
 
         public ActionResult Index()
         {
             return View();
         }
-        
+
+        public ActionResult WebGrid()
+        {
+            ProductModel model = new ProductModel();
+            model.PageSize = 20;
+
+            List<Product> products = new List<Product>();
+
+            using (var entities = new ApplicationDbContext())
+            {
+                //entities.UserCSVDatabase.Where(r => r.Id >= 1).Select(r => products.Add(r));
+                var prod = from p in entities.UserCSVDatabase select p;
+                products = prod.ToList();
+            }
+
+            if (products != null)
+            {
+                model.TotalCount = products.Count();
+                model.Products = products;
+            }
+
+            return View(model);
+        }
+
         // HOW TO ADD ROW TO DB TABLE
         /*
         public ActionResult Index(UserCSVModel customer)
