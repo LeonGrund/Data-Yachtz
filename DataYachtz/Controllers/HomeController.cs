@@ -222,11 +222,16 @@ namespace DataYachtz.Controllers
                 var prod = from p in entities.UserCSVDatabase select p;
                 products = prod.ToList();
             }
+            
 
             if (products != null)
             {
+                
                 model.TotalCount = products.Count();
+                //model.SetColumns();
+                //model.AddColumn("Id");
                 model.Products = products;
+                model.InitGrid();
             }
 
             return View(model);

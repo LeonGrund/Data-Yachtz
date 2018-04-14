@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Helpers;
 
 namespace DataYachtz.Models
 {
@@ -128,8 +129,40 @@ namespace DataYachtz.Models
         public int PageSize { get; set; }
         public int TotalCount { get; set; }
         public List<Product> Products { get; set; }
+        public WebGrid Grid { get; set; }
+        public WebGridColumn[] Columns { get; set; }
 
+        public ProductModel()
+        {
+            PageSize = 1;
+            TotalCount = -1;
+            Products = new List<Product>();
+            Columns = new WebGridColumn[1];
+           // var column = new WebGrid(grid.Column("Id", "Id"));
+        }
+
+        public void SetColumns() { Columns = new WebGridColumn[TotalCount]; }
+        public void SetColumns(int amount) { Columns = new WebGridColumn[amount]; }
+        public void AddColumn(string header) { Grid.Columns((Grid.Column(header, header))); }
+        public void InitGrid()
+        {
+            Grid = new WebGrid(null, rowsPerPage: PageSize);
+            Grid.Bind(Products, autoSortAndPage: true, rowCount:PageSize);
+            Grid.GetHtml(tableStyle: "table table-bordered",
+                    mode: WebGridPagerModes.All,
+                    firstText: "<< First",
+                    previousText: "< Prev",
+                    nextText: "Next >",
+                    lastText: "Last >>",
+                    columns: Grid.Columns(
+                    Grid.Column("Id", " Id"),
+                    Grid.Column("Email", "Email"),
+                    Grid.Column("CSV", "CSV")));
+          
+
+        }
     }
+
     public class Product
     {
         public int Id { get; set; }
