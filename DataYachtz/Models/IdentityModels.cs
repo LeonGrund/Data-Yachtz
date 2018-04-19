@@ -22,7 +22,7 @@ namespace DataYachtz.Models
     {
         //TODO: Auto gen code for new csv db table added
         public DbSet<Product> UserCSVDatabase { get; set; }
-       
+        public DbSet<ItemMasterModel> ItemMasterDatabase { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

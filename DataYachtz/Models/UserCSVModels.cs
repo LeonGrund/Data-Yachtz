@@ -127,41 +127,70 @@ namespace DataYachtz.Models
     public class ProductModel
     {
         public int PageSize { get; set; }
-        public int TotalCount { get; set; }
+        private int TotalCount { get; set; }
         public List<Product> Products { get; set; }
+        public List<string> Columns { get; set; }
         public WebGrid Grid { get; set; }
-        public WebGridColumn[] Columns { get; set; }
+        public WebGridColumn[] GridColumns{ get; set;}
 
         public ProductModel()
         {
-            PageSize = 1;
-            TotalCount = -1;
+            PageSize = 20;
+            TotalCount = 4;
             Products = new List<Product>();
-            Columns = new WebGridColumn[1];
-           // var column = new WebGrid(grid.Column("Id", "Id"));
-        }
+            Columns = new List<string>() { "Id", "Email", "CSV" };
 
-        public void SetColumns() { Columns = new WebGridColumn[TotalCount]; }
-        public void SetColumns(int amount) { Columns = new WebGridColumn[amount]; }
-        public void AddColumn(string header) { Grid.Columns((Grid.Column(header, header))); }
-        public void InitGrid()
-        {
+           GridColumns = new WebGridColumn[Columns.Count];
+
             Grid = new WebGrid(null, rowsPerPage: PageSize);
-            Grid.Bind(Products, autoSortAndPage: true, rowCount:PageSize);
+
+            for (int i = 0; i < Columns.Count; i++)
+            {
+                var col = Grid.Column(Columns[i], Columns[i]);
+                GridColumns[Columns.Count - 1 - i] = col;
+            }
+
+            Grid.Bind(Products, autoSortAndPage: true, rowCount: PageSize);
             Grid.GetHtml(tableStyle: "table table-bordered",
                     mode: WebGridPagerModes.All,
                     firstText: "<< First",
                     previousText: "< Prev",
                     nextText: "Next >",
                     lastText: "Last >>",
-                    columns: Grid.Columns(
-                    Grid.Column("Id", " Id"),
-                    Grid.Column("Email", "Email"),
-                    Grid.Column("CSV", "CSV")));
-          
-
+                    columns: GridColumns);
         }
+
+
+        public void CreateGrid(List<Product> products)
+        {
+            Products = products;
+            TotalCount = products.Count;    
+           
+            GridColumns = new WebGridColumn[Columns.Count];
+
+            Grid = new WebGrid(null, rowsPerPage: PageSize);
+
+            for (int i = 0; i < Columns.Count; i++)
+            {
+                var col = Grid.Column(Columns[i], Columns[i]);
+                GridColumns[i] = col;
+            }
+       
+            Grid.Bind(Products, autoSortAndPage: true, rowCount: PageSize);
+            Grid.GetHtml(tableStyle: "table table-bordered",
+                    mode: WebGridPagerModes.All,
+                    firstText: "<< First",
+                    previousText: "< Prev",
+                    nextText: "Next >",
+                    lastText: "Last >>",
+                    columns: GridColumns);
+                     
+        }
+       
+
+
     }
+
 
     public class Product
     {

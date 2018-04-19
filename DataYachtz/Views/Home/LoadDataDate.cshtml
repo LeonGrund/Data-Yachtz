@@ -1,0 +1,131 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<div>
+    <br />
+    <center><h3>CSV File</h3></center>
+    <table id="tblItems">
+        <thead>
+            <tr>
+                <th>Part Number</th>
+                <th>Specification</th>
+                <th>Description</th>
+                <th>Created Date</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Part Number</th>
+                <th>Specification</th>
+                <th>Description</th>
+                <th>Created Date</th>
+            </tr>
+        </tfoot>
+    </table>
+
+    @* jQuery DataTables css *@
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    <link href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/DataTables/css/dataTables.jqueryui.css" rel="stylesheet" />
+
+    @* jQuery *@
+    @section Scripts{
+        <script src="~/Scripts/jquery-1.12.4.js"></script>
+        @*<script src="~/Scripts/DataTables/jquery.dataTables.js"></script>*@
+        <script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+        <script src="~/Scripts/DataTables/dataTables.jqueryui.js"></script>
+        <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+        @*<script src="~/Scripts/jquery.dataTables.columnFilter.js"></script>*@
+        <script src="~/Scripts/jquery-1.12.4.js"></script>
+        <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+        @*<script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>*@
+        <script src="~/Scripts/DataTables/dataTables.jqueryui.js"></script>
+        <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+        <script src="~/Scripts/jquery.dataTables.columnFilter.js"></script>
+
+        <style type="text/css">
+            .ui-datepicker-calendar tr, .ui-datepicker-calendar td, .ui-datepicker-calendar td a, .ui-datepicker-calendar th {
+                font-size: inherit;
+            }
+
+            div.ui-datepicker {
+                font-size: 10px;
+            }
+
+            .ui-datepicker-title span {
+                font-size: 10px;
+            }
+
+            .my-style-class input[type=text] {
+                color: green;
+            }
+        </style>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#tblItems tfoot th').each(function () {
+                    var title = $(this).text();
+                    $(this).html('<input class="FClass" style="width:inherit;" type="text" id="' + title.replace(' ', '_') + '" placeholder="Search ' + title + '" />');
+                });
+
+                var table = $('#tblItems').DataTable({
+                    "ordering": true,
+                    "lengthMenu": [[100, 250, 500, -1], [100, 250, 500, "All"]],
+                    "pagingType": "full_numbers",
+                    "scrollY": "350px",
+                    "scrollX": true,
+                    "bJQueryUI": true,
+
+                    "processing": true,
+                    "serverSide": true,
+                    "orderMulti": false,
+
+                    "ajax": {
+                        "url": "/home/LoadDataWithDate",
+                        "type": "POST",
+                        "datatype": "json"
+                    },
+
+                    "columns": [
+                        { "data": "PartNumber", "name": "PartNumber", "autoWidth": false },
+                        { "data": "Specification", "name": "Specification", "autoWidth": true },
+                        { "data": "Description", "name": "Description", "autoWidth": true },
+                        {
+                            "data": "CreatedDate",
+                            "name": "CreatedDate",
+                            //"type": "date-range",
+                            "render": function (data) {
+                                var data1 = data.replace("/Date(", "").replace(")/", "");
+                                var date = new Date(parseInt(data1));
+                                var month = date.getMonth() + 1;
+                                return date.getDate() + "-" + (month.length > 1 ? month : "0" + month) + "-" + date.getFullYear();
+                            },
+                            "autoWidth": true
+                        }
+                    ]
+                });
+
+                $('#Created_Date').prop("readonly", "readonly").datepicker({
+                    dateFormat: 'dd-mm-yy',
+                    changeMonth: true,
+                    changeYear: true,
+                    onClose: function () {
+                        table.draw();
+                    }
+                });
+
+                table.columns().every(function () {
+                    var that = this;
+
+                    $('input', this.footer()).on('keyup change', function () {
+                        if (that.search() !== this.value) {
+                            that
+                                .search(this.value)
+                                .draw();
+                        }
+                    });
+                });
+            });
+        </script>
+    }
+</div>

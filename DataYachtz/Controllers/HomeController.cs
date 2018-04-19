@@ -14,13 +14,91 @@ using DataYachtz;
 using LumenWorks.Framework.IO.Csv;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Linq.Dynamic;
+
 
 namespace DataYachtz.Controllers
 {
     public class HomeController : Controller
     {
-        private ApplicationDbContext _dbContext;
 
+
+        public ActionResult LoadDataDate()
+        {
+            //var items = GetItems("", "", "");
+            return View();
+        }
+
+        // With server side search Sorting with DatePicker
+        [HttpPost]
+        public ActionResult LoadDataWithDate()
+        {
+            var For = Request.Form;
+
+           // var isNameSortable = true;//Convert.ToBoolean(Request["bSortable_1"]);
+           // var isAddressSortable = true; //Convert.ToBoolean(Request["bSortable_2"]);
+            //var isTownSortable = true; //Convert.ToBoolean(Request["bSortable_3"]);
+
+            var Draw = Request.Form.GetValues("draw").FirstOrDefault();
+            var Start = Request.Form.GetValues("start").FirstOrDefault();
+            var Length = Request.Form.GetValues("length").FirstOrDefault();
+
+            var SortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][data]").FirstOrDefault();
+            var SortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
+           
+            var PartNo = Request.Form.GetValues("columns[0][search][value]").FirstOrDefault();
+            var Spec = Request.Form.GetValues("columns[1][search][value]").FirstOrDefault();
+            var Desc = Request.Form.GetValues("columns[2][search][value]").FirstOrDefault();
+            var CreatedDate = Request.Form.GetValues("columns[3][search][value]").FirstOrDefault();
+            DateTime CDate = DateTime.MinValue;
+            if (CreatedDate != "")
+                CDate = Convert.ToDateTime(CreatedDate).Date;
+
+            int PageSize = Length != null ? Convert.ToInt32(Length) : 0;
+            int Skip = Start != null ? Convert.ToInt32(Start) : 0;
+            int TotalRecords = 3;
+
+            //List<ItemMasterModel> Models;
+            // using (var entities = new ApplicationDbContext()) {
+            //Models = entities.ItemMasterDatabase.Select(X => X).ToList(); }
+            IEnumerable<ItemMasterModel> Items;
+            IEnumerable<ItemMasterModel> NewItems;
+            object data;
+
+            using (var dbs = new ApplicationDbContext()) { 
+            Items = (from a in dbs.ItemMasterDatabase.Where(x => 
+                x.Description.Contains(Desc) &&
+                x.Specification.Contains(Spec) &&
+                x.PartNumber.Contains(PartNo))
+               
+                //x.CreatedDate.Date >= CDate.Date)
+                .Take(4000)
+                         select new ItemMasterModel
+                         {
+                             PartNumber = a.PartNumber,
+                             Specification = a.Specification,
+                             Description = a.Description,
+                             CreatedDate = a.CreatedDate
+                         });
+
+                if (!(string.IsNullOrEmpty(SortColumn) && string.IsNullOrEmpty(SortColumnDir)))
+                {
+                    Items = Items.OrderBy(SortColumn + " " + SortColumnDir);
+                }
+                NewItems = Items.Select(x => x);
+                //TotalRecords = Items.Count();
+                //NewItems = Items.Skip(Skip).Take(PageSize).ToList();
+                data = new { draw = Draw, recordsFiltered = TotalRecords, recordsTotal = TotalRecords, data = NewItems.ToList<ItemMasterModel>() };
+                
+            }
+   
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+        private ApplicationDbContext _dbContext;
+      
         public HomeController()
         {
             _dbContext = new ApplicationDbContext();
@@ -167,6 +245,9 @@ namespace DataYachtz.Controllers
                              .Select(x => x.ColumnName)
                              .ToArray();
 
+                        model.ColName = csvColNames.ToList();
+
+                        // Populating PublicUserCSVModel
                         var table = new List<List<string>>(); // each list is a col with [0]=name of col
                         foreach (var colName in csvColNames)
                         {                  
@@ -185,10 +266,13 @@ namespace DataYachtz.Controllers
                         //csvGrid.Model = model;     // set model in grid class
                         //var works = DataYachtz.MVCGridConfig.Model.GetList(2);
                         //  csvGrid.RegisterGrids();
-                        DataYachtz.MVCGridConfig.Model = model;
-                        var grid = new MVCGridToolbarModel(model.Name);
+                        //DataYachtz.MVCGridConfig.Model = model;
+                        //var grid = new MVCGridToolbarModel(model.Name);
 
-                        return View("_MVCGridToolbar", grid);
+                        TempData["PublicUpload"] = model;
+                       
+
+                        return RedirectToAction("WebGrid");
                     }
                     else
                     {
@@ -212,46 +296,61 @@ namespace DataYachtz.Controllers
         public ActionResult WebGrid()
         {
             ProductModel model = new ProductModel();
-            model.PageSize = 20;
+            PublicUserCSVModel csvModel = new PublicUserCSVModel();
 
-            List<Product> products = new List<Product>();
-
-            using (var entities = new ApplicationDbContext())
+            if (TempData.ContainsKey("PublicUpload"))
             {
-                //entities.UserCSVDatabase.Where(r => r.Id >= 1).Select(r => products.Add(r));
-                var prod = from p in entities.UserCSVDatabase select p;
-                products = prod.ToList();
+
+                csvModel = (PublicUserCSVModel)TempData["PublicUpload"];   //latest uploaded csv
+                Session["PublicUpload"] = csvModel;
+
+            }
+
+            if (Session.Keys.Equals("PublicUpload")){
+  
+                List<Product> products = new List<Product>();
+
+                using (var entities = new ApplicationDbContext())
+                {
+                    //entities.UserCSVDatabase.Where(r => r.Id >= 1).Select(r => products.Add(r));
+                    var prod = from p in entities.UserCSVDatabase select p;
+                    products = prod.ToList();
+                }
+
+
+                if (products != null && products.Count > 0)
+                {
+                    model.CreateGrid(products);
+                }
             }
             
-
-            if (products != null)
-            {
-                
-                model.TotalCount = products.Count();
-                //model.SetColumns();
-                //model.AddColumn("Id");
-                model.Products = products;
-                model.InitGrid();
-            }
+          
 
             return View(model);
         }
 
-        // HOW TO ADD ROW TO DB TABLE
-        /*
-        public ActionResult Index(UserCSVModel customer)
+        [HttpPost]
+        public ActionResult WebGrid(ProductModel  model)
         {
-            using (ApplicationDbContext entities = new ApplicationDbContext())
+
+            return View(model);
+        }
+
+            // HOW TO ADD ROW TO DB TABLE
+            /*
+            public ActionResult Index(UserCSVModel customer)
             {
-                entities.UserCSVDatabase.Add(customer);
-                entities.SaveChanges();
-            }
+                using (ApplicationDbContext entities = new ApplicationDbContext())
+                {
+                    entities.UserCSVDatabase.Add(customer);
+                    entities.SaveChanges();
+                }
 
-            var users = _dbContext.UserCSVDatabase.ToList(); 
-            return View(users);
-        }*/
+                var users = _dbContext.UserCSVDatabase.ToList(); 
+                return View(users);
+            }*/
 
-        public ActionResult Contact()
+            public ActionResult Contact()
         {
             //ViewBag.Message = "Your contact page.";
             return View();

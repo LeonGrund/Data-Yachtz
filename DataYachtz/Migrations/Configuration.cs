@@ -10,7 +10,6 @@ namespace DataYachtz.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "DataYachtz.Models.ApplicationDbContext";
         }
 
         protected override void Seed(DataYachtz.Models.ApplicationDbContext context)

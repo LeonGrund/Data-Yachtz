@@ -35,13 +35,13 @@ namespace DataYachtz
                     {
 
                     
-                 { 
+                  
             
                         cols.Add().WithColumnName("test")
                                 .WithHeaderText("test")
                                 .WithVisibility(true, true)
                                 .WithValueExpression(i => i.Name);
-                 }
+                 
                     }
                     else
                     {

@@ -1,0 +1,2 @@
+C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\DataYachtz.Tests\obj\Debug\DataYachtz.Tests.csprojResolveAssemblyReference.cache
+C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\DataYachtz.Tests\obj\Debug\DataYachtz.Tests.csproj.CoreCompileInputs.cache
