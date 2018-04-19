@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewBag.Title = "Items";
+}
+<h2>Items</h2>
+<div>
+    <table id="tblItems">
+        <thead>
+            <tr>
+                <th>Part Number</th>
+                <th>Specification</th>
+                <th>Description</th>
+                <th>Created Date</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Part Number</th>
+                <th>Specification</th>
+                <th>Description</th>
+                <th>Created Date</th>
+            </tr>
+        </tfoot>
+    </table>
+
+    @* jQuery DataTables css *@
+    <link href="//code.jquery.com/ui/1.11.4/themes/overcast/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/DataTables/css/dataTables.jqueryui.css" rel="stylesheet" />
+
+    @* jQuery *@
+
+    @section Scripts{
+
+        @*<script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>*@
+        <script src="~/Scripts/jquery-1.12.0.js"></script>
+        <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+        <script src="~/Scripts/DataTables/dataTables.jqueryui.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#tblItems tfoot th').each(function () {
+                    var title = $(this).text();
+                    $(this).html('<input class="FClass" style="width:inherit;" type="text" id="' + title.replace(' ', '_') + '" placeholder="Search ' + title + '" />');
+                });
+
+                var table = $('#tblItems').DataTable({
+                    "ordering": false,
+                    "lengthMenu": [[100, 250, 500, -1], [100, 250, 500, "All"]],
+                    "pagingType": "full_numbers",
+                    "scrollY": "350px",
+                    "scrollX": true,
+                    "ajax": {
+                        "url": "/home/LoadData",
+                        "type": "GET",
+                        "datatype": "json"
+                    },
+                    "columns": [
+                        { "data": "PartNumber", "autoWidth": false },
+                        { "data": "Specification", "autoWidth": true },
+                        { "data": "Description", "autoWidth": true },
+                        {
+                            "data": "CreatedDate",
+                            "name": "CreatedDate",
+                            //"type": "date-range",
+                            "render": function (data) {
+                                var data1 = data.replace("/Date(", "").replace(")/", "");
+                                var date = new Date(parseInt(data1));
+                                var month = date.getMonth() + 1;
+                                return date.getDate() + "-" + (month.length > 1 ? month : "0" + month) + "-" + date.getFullYear();
+                            },
+                            "autoWidth": true
+                        }
+                    ]
+                });
+
+                table.columns().every(function () {
+                    var that = this;
+                    $('input', this.footer()).on('keyup change', function () {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+            });
+
+            $(document).ready(function () {
+                $(".FClass").change(function () {
+                    var values = "Part No : " + $("#PartNumber").val() + ", Spec : " + $("#Specification").val() + ", Desc : " + $("#Description").val();
+                });
+            });
+        </script>
+    }
+</div>

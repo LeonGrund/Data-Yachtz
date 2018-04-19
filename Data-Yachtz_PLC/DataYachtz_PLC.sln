@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataYachtz_PLC", "DataYachtz_PLC\DataYachtz_PLC.csproj", "{BA3B0774-62B2-42D0-A806-01DDAF4C6F86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataYachtz_PLC.Tests", "DataYachtz_PLC.Tests\DataYachtz_PLC.Tests.csproj", "{457E5DE2-95E5-45B9-9911-45B79BE5167F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA3B0774-62B2-42D0-A806-01DDAF4C6F86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA3B0774-62B2-42D0-A806-01DDAF4C6F86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA3B0774-62B2-42D0-A806-01DDAF4C6F86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA3B0774-62B2-42D0-A806-01DDAF4C6F86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{457E5DE2-95E5-45B9-9911-45B79BE5167F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{457E5DE2-95E5-45B9-9911-45B79BE5167F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{457E5DE2-95E5-45B9-9911-45B79BE5167F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{457E5DE2-95E5-45B9-9911-45B79BE5167F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {77D468FA-DCA9-4707-B8E4-A1FB330FC66C}
+	EndGlobalSection
+EndGlobal

@@ -22,11 +22,74 @@ namespace DataYachtz.Controllers
     public class HomeController : Controller
     {
 
+        ApplicationDbContext entities = new ApplicationDbContext();
+
+        public ActionResult Index()
+        {
+            //var items = GetItems("", "", "");
+            return View();
+        }
+
+
+        // With server side search Sorting
+        [HttpPost]
+        public ActionResult LoadDataIndex()
+        {
+            var For = Request.Form;
+
+            //var isNameSortable = Convert.ToBoolean(Request["bSortable_1"]);
+            //var isAddressSortable = Convert.ToBoolean(Request["bSortable_2"]);
+            //var isTownSortable = Convert.ToBoolean(Request["bSortable_3"]);
+
+            var Draw = Request.Form.GetValues("draw").FirstOrDefault();
+            var Start = Request.Form.GetValues("start").FirstOrDefault();
+            var Length = Request.Form.GetValues("length").FirstOrDefault();
+
+            var SortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][data]").FirstOrDefault();
+            var SortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
+
+            var PartNo = Request.Form.GetValues("columns[0][search][value]").FirstOrDefault();
+            var Spec = Request.Form.GetValues("columns[1][search][value]").FirstOrDefault();
+            var Desc = Request.Form.GetValues("columns[2][search][value]").FirstOrDefault();
+
+            int PageSize = Length != null ? Convert.ToInt32(Length) : 0;
+            int Skip = Start != null ? Convert.ToInt32(Start) : 0;
+            int TotalRecords = 0;
+
+            var Items = (from a in entities.ItemMasterDatabase
+                         .Where(x => x.Description.Contains(Desc) &&
+                         x.Specification.Contains(Spec) &&
+                         x.PartNumber.Contains(PartNo))
+                         .Take(4000)
+                         select new ItemMasterModel
+                         {
+                             PartNumber = a.PartNumber,
+                             Specification = a.Specification,
+                             Description = a.Description,
+                             CreatedDate = a.CreatedDate
+                         });
+
+            if (!(string.IsNullOrEmpty(SortColumn) && string.IsNullOrEmpty(SortColumnDir)))
+            {
+                Items = Items.OrderBy(SortColumn + " " + SortColumnDir);
+            }
+
+            //TotalRecords = Items.ToList().Count();
+            //var NewItems = Items.Skip(Skip).Take(PageSize).ToList();
+            var NewItems = Items;
+            return Json(new { draw = Draw, recordsFiltered = TotalRecords, recordsTotal = TotalRecords, data = NewItems }, JsonRequestBehavior.AllowGet);
+        }
+
 
         public ActionResult LoadDataDate()
         {
             //var items = GetItems("", "", "");
-            return View();
+            List<ItemMasterModel> Models;
+            using (var entities = new ApplicationDbContext())
+            {
+                Models = entities.ItemMasterDatabase.Select(X => X).ToList();
+            }
+            return View(Models);
         }
 
         // With server side search Sorting with DatePicker
@@ -50,6 +113,17 @@ namespace DataYachtz.Controllers
             var Spec = Request.Form.GetValues("columns[1][search][value]").FirstOrDefault();
             var Desc = Request.Form.GetValues("columns[2][search][value]").FirstOrDefault();
             var CreatedDate = Request.Form.GetValues("columns[3][search][value]").FirstOrDefault();
+            var search = For.GetValues("columns[0][text][value]");
+            var search2 = For.GetValues("columns[0][dir][value]");
+            var search3 = For.GetValues("columns[0][dir]");
+            var search4 = For.GetValues("order[1]");
+            var search5 = For.GetValues("order[1][search][value]");
+            var search6 = For.GetValues("order[1][value]");
+            var search7 = For.GetValues("order[0][column]");
+            var search8 = For.GetValues("order[0][column][data]");
+            var search9 = For.GetValues("order[2][column][data]");
+
+
             DateTime CDate = DateTime.MinValue;
             if (CreatedDate != "")
                 CDate = Convert.ToDateTime(CreatedDate).Date;
@@ -58,15 +132,15 @@ namespace DataYachtz.Controllers
             int Skip = Start != null ? Convert.ToInt32(Start) : 0;
             int TotalRecords = 3;
 
-            //List<ItemMasterModel> Models;
-            // using (var entities = new ApplicationDbContext()) {
-            //Models = entities.ItemMasterDatabase.Select(X => X).ToList(); }
-            IEnumerable<ItemMasterModel> Items;
-            IEnumerable<ItemMasterModel> NewItems;
-            object data;
+            List<ItemMasterModel> Models;
+            using (var entities = new ApplicationDbContext()) {
+            Models = entities.ItemMasterDatabase.Select(X => X).ToList(); }
+            //IEnumerable<ItemMasterModel> Items;
+           // IEnumerable<ItemMasterModel> NewItems;
+            //object data;
 
-            using (var dbs = new ApplicationDbContext()) { 
-            Items = (from a in dbs.ItemMasterDatabase.Where(x => 
+            //using (var dbs = new ApplicationDbContext()) { 
+           var Items = (from a in Models.Where(x => 
                 x.Description.Contains(Desc) &&
                 x.Specification.Contains(Spec) &&
                 x.PartNumber.Contains(PartNo))
@@ -85,14 +159,14 @@ namespace DataYachtz.Controllers
                 {
                     Items = Items.OrderBy(SortColumn + " " + SortColumnDir);
                 }
-                NewItems = Items.Select(x => x);
-                //TotalRecords = Items.Count();
-                //NewItems = Items.Skip(Skip).Take(PageSize).ToList();
-                data = new { draw = Draw, recordsFiltered = TotalRecords, recordsTotal = TotalRecords, data = NewItems.ToList<ItemMasterModel>() };
+                var NewItems = Items.Select(x => x);
+                TotalRecords = Items.Count();
+                NewItems = Items.Skip(Skip).Take(PageSize).ToList();
+                //data = new { draw = Draw, recordsFiltered = TotalRecords, recordsTotal = TotalRecords, data = NewItems };
                 
-            }
+            //}
    
-            return Json(data, JsonRequestBehavior.AllowGet);
+            return Json(new { draw = Draw, recordsFiltered = TotalRecords, recordsTotal = TotalRecords, data = NewItems }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -288,10 +362,7 @@ namespace DataYachtz.Controllers
             return View();
         }
 
-        public ActionResult Index()
-        {
-            return View();
-        }
+      
 
         public ActionResult WebGrid()
         {
