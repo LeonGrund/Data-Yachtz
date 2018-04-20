@@ -1,0 +1,64 @@
+﻿@model DataYachtz_PLC.Models.CsvModel
+
+
+<div style="width:600px">
+
+
+    <table id="table_id"
+           class="table table-condensed table-striped table-hover">
+        <thead>
+            <tr>
+                @for (int i = 0; i < Model.GetSize(); i++)
+                {
+                    <th>
+                        @Html.DisplayName(Model.ColumnNames[i])
+                    </th>
+                }
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var cell in Model.Data)
+            {
+                <tr>
+                    @for (int i = 0; i < Model.GetSize(); i++)
+                    {
+                        <td>
+                            @Html.DisplayName(cell.GetCellInfo(Model.ColumnNames[i]))
+                        </td>
+                    }
+                    @*
+                        <td>
+                            @Html.ActionLink(Resources.Edit, "Edit",
+                               new { id = item.ID }, htmlAttributes: new
+                               {
+                                   @class = "btn btn-default btn-sm"
+                               })
+                        </td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css">
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    <link href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/DataTables/css/dataTables.jqueryui.css" rel="stylesheet" />
+    <script src="jquery-1.11.2.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css" />
+    <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js">
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+            "pagingType": "full_numbers",
+                        });
+    </script>
+
+</div>
