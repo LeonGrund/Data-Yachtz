@@ -2,106 +2,218 @@
 @{
     ViewBag.Title = "Home Page";
 }
-
 @*
-    <div id="dvData">
+    @Ajax.ActionLink("Open popup", "SomeAction", new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "result", InsertionMode = InsertionMode.Replace, OnSuccess = "openPopup" })<br />
 
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <div id="result" style="display:none;">
+        <button class="col-md-1" id="bDuplicate" type="button">Duplicate</button>
+    </div>
+
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#btnExport").click(function (e) {
-                window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('div[id$=gridData][#tblItems]').html()));
-                e.preventDefault();
+            $("#result").dialog({
+                autoOpen: false,
+                title: 'Title',
+                width: 500,
+                height: 'auto',
+                modal: true
             });
         });
-    </script>
-        </div>
+        function openPopup() {
+            //$("#result").dialog("open");
 
-    <input type="button" id="btnExport" value="Export" />
+        }
+    </script>
 *@
 
-<div style="width:600px">
+<div>
     <br />
     <center><h3>Database Data</h3></center>
-    <table class="table table-striped table-bordered table-hover table-condensed">
-    <table id="tblItems">
+
+
+    <button class="stylesheet" id="RemoveRow" type="button">Remove</button>
+
+    <button class="stylesheet" id="DuplicateRow" type="button">Duplicate</button>
+
+    <button class="stylesheet" id="AddRow" type="button">Add</button>
+
+    <table id="tblItems" class="display" cellspacing="0">
         <thead>
             <tr>
                 @for (int i = 0; i < Model.GetSize(); i++)
                 {
-                    <th>@Model.ColumnNames[i]</th>
+                    <th>
+                        @Html.DisplayName(Model.ColumnNames[i])
+                    </th>
                 }
             </tr>
         </thead>
+        <tbody>
+            @foreach (var cell in Model.Data)
+            {
+                <tr>
+                    @for (int i = 0; i < Model.GetSize(); i++)
+                    {
+                        <td>
+                            @Html.DisplayName(cell.GetCellInfo(Model.ColumnNames[i]))
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
         <tfoot>
             <tr>
                 @for (int i = 0; i < Model.GetSize(); i++)
                 {
-                    <th>@Model.ColumnNames[i]</th>
+                    <th>
+                        @Html.DisplayName("Search " + Model.ColumnNames[i])
+                    </th>
                 }
             </tr>
         </tfoot>
     </table>
 
-  
+    <style type="text/css">
+        .addRow {
+             <input type="text" class="stylesheet" name="PartNumber" value=" "/> 
+             <input type="text" class="stylesheet" name="Specification"/>
+             <input type="text" class="stylesheet" name="Description"/>
+             <input type="text" class="stylesheet" name="CreatedDate"/>
+        }
+    </style>
+
 
     @* jQuery DataTables css *@
-    <link href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" />
-    <link href="~/Content/DataTables/css/dataTables.jqueryui.css" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.5/css/select.dataTables.min.css  />
+    <link rel="stylesheet" type="text/css" href="../../extensions/Editor/css/editor.dataTables.min.css" />
 
     @* jQuery *@
 
     @section Scripts{
+        @Scripts.Render("~/bundles/jqueryval")
+
         <script src="~/Scripts/jquery-1.12.4.js"></script>
         <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
-        @*<script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>*@
+        <script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+        <script src="//cdn.datatables.net/1.10.9/js/dataTables.select.min.js"></script>
         <script src="~/Scripts/DataTables/dataTables.jqueryui.js"></script>
         <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
         <script src="~/Scripts/jquery.dataTables.columnFilter.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+        @*<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
+                <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>*@
+
+
+
+        <script type="text/javascript" src="https://cdn.datatables.net/r/dt/jq-2.1.4,jszip-2.5.0,pdfmake-0.1.18,dt-1.10.9,af-2.0.0,b-1.0.3,b-colvis-1.0.3,b-html5-1.0.3,b-print-1.0.3,se-1.0.1/datatables.min.js"></script>
 
         <script type="text/javascript">
 
             $(document).ready(function () {
-                var MODEL = @Html.Raw(Json.Encode(Model));
-
 
                 $('#tblItems tfoot th').each(function () {
                     var title = $(this).text();
-                    $(this).html('<input class="FClass" style="width:inherit;" type="text" id="' + title.replace(' ', '_') + '" placeholder="Search ' + title + '" />');
+                    $(this).html('<input type="text" id="' + '" placeholder="' + title.trim() + '" />');
                 });
-
 
 
                 var table = $('#tblItems').DataTable({
-                    "ordering": true,
-                    "lengthMenu": [[100, 250, 500, -1], [100, 250, 500, "All"]],
                     "pagingType": "full_numbers",
-                    "scrollY": "350px",
-                    "scrollX": true,
-                    "bJQueryUI": true,
-
+                    "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                     "processing": true,
-                    "serverSide": true,
-                    "orderMulti": false,
+                    "dom": 'lBfrtip',
+                    "buttons": [
 
-                    "ajax": {
-                        "url": "/home/LoadDataIndex",
-                        "type": "POST",
-                        "datatype": "json"
-                    },
+                        {
+                            extend: 'collection',
+                            text: 'Export',
 
-                    "columns": [
-                        { "data": MODEL.ColumnNames[0], "name": MODEL.ColumnNames[0], "autoWidth": false },
-                        { "data": MODEL.ColumnNames[1], "name": MODEL.ColumnNames[1], "autoWidth": false },
-                        { "data": MODEL.ColumnNames[2], "name": MODEL.ColumnNames[2], "autoWidth": false }
+                            buttons: [
+                                'copy',
+                                'excel',
+                                'csv',
+                                'pdf',
+                                'print'
+                            ]
+                        }
 
+                    ]
+
+
+
+
+                });
+
+
+
+                 /*
+                editor = new $.fn.DataTable.Editor({
+                    ajax: "../php/staff.php",
+                    table: "#tblItems",
+                    fields: [{
+                        label: "PartNumber:",
+                        name: "PartNumber"
+                    }, {
+                        label: "Specification:",
+                        name: "Specification"
+                    }, {
+                        label: "Description:",
+                        name: "Description"
+                    }, {
+                        label: "CreatedDate:",
+                        name: "CreatedDate"
+                    }
                     ]
                 });
 
-                
-                table.columns().every(function () {
-                    var that = this;
+                $('#tblItems').on('click', 'tbody td:not(:first-child)', function (e) {
+                    editor.inline(this, {
+                        submit: 'allIfChanged'
+                    });
+                });
 
+               
+               $('#tblItems').DataTable({
+                   dom: "Bfrtip",
+                   ajax: "../php/staff.php",
+                   columns: [
+                       {
+                           data: null,
+                           defaultContent: '',
+                           className: 'select-checkbox',
+                           orderable: false
+                       },
+                       { data: "first_name" },
+                       { data: "last_name" },
+                       { data: "position" },
+                       { data: "office" },
+                       { data: "start_date" },
+                       { data: "salary", render: $.fn.dataTable.render.number(',', '.', 0, '$') }
+                   ],
+                   order: [1, 'asc'],
+                   select: {
+                       style: 'os',
+                       selector: 'td:first-child'
+                   },
+                   buttons: [
+                       { extend: "create", editor: editor },
+                       { extend: "edit", editor: editor },
+                       { extend: "remove", editor: editor }
+                   ]
+               });
+            */
+
+
+
+                table.columns().every(function () {
+
+                    var that = this;
                     $('input', this.footer()).on('keyup change', function () {
                         if (that.search() !== this) {
                             that
@@ -109,15 +221,48 @@
                                 .draw();
                         }
                     });
-                });
-            });
 
-            @*
-            $(document).ready(function () {
-                $(".FClass").change(function () {
-                    var values = "Part No : " + $("#PartNumber").val() + ", Spec : " + $("#Specification").val() + ", Desc : " + $("#Description").val();
                 });
-            }); *@
+
+
+
+
+                $('#tblItems tbody').on('click', 'tr', function () {
+                    if ($(this).hasClass('selected')) {
+                        $(this).removeClass('selected');
+                    }
+                    else {
+                        table.$('tr.selected').removeClass('selected');
+                        $(this).addClass('selected');
+                    }
+                });
+
+
+                $('#RemoveRow').click(function () {
+                    table.row('.selected').remove().draw(false);
+                });
+
+                $('#DuplicateRow').click(function () {
+                    var addRow = table.row('.selected').data();
+                    table.$('tr.selected').removeClass('selected');
+                    table.row.add(addRow).draw();
+                });
+
+                
+                $('#AddRow').on('click', function () {
+
+                    table.row.add([
+                        'col1',
+                        'col2',
+                        'col3',
+                        'col4'
+                    ]).draw();
+                    
+                });
+
+
+
+            });
 
         </script>
     }

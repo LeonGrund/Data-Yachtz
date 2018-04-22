@@ -1,19 +1,130 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using DataYachtz_PLC.Models;
-
+using LumenWorks.Framework.IO.Csv;
 
 namespace DataYachtz_PLC.Controllers
 {
     public class HomeController : Controller
     {
+        public HomeController()
+        {
+            Model = new CsvModel();
+        }
+
+        private void InitTestModel()
+        {
+            Model = new CsvModel();
+            List<ItemMasterModel> Models;
+            using (var entities = new ApplicationDbContext())
+            {
+                Models = entities.ItemMasters.Select(X => X).ToList();
+
+                foreach (var model in Models)
+                {
+                    var cell = new Cell(Model.ColumnNames);
+                    cell.SetCellInfo(Model.ColumnNames[0], model.PartNumber);
+                    cell.SetCellInfo(Model.ColumnNames[1], model.Specification);
+                    cell.SetCellInfo(Model.ColumnNames[2], model.Description);
+                    cell.SetCellInfo(Model.ColumnNames[3], model.CreatedDate.ToString());
+                    Model.AddCell(cell);
+                }
+            }
+        }
 
         public CsvModel Model;
 
+
+        public ActionResult Upload()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Upload(HttpPostedFileBase upload)
+        {
+            if (ModelState.IsValid)
+            {
+
+                if (upload != null && upload.ContentLength > 0)
+                {
+
+                    if (upload.FileName.EndsWith(".csv"))
+                    {
+                        Stream stream = upload.InputStream;
+                        DataTable csvDataTable = new DataTable();
+
+                        var csvDataModel = new CsvModel();    //CREATE MODEL
+                        //var csvDataList = new List<string>();           // List for the model
+
+                        using (CsvReader csvReader =
+                            new CsvReader(new StreamReader(stream), true))
+                        {
+                            csvDataTable.Load(csvReader);
+
+                        }
+
+                        string[] csvColNames = csvDataTable.Columns.Cast<DataColumn>()
+                             .Select(x => x.ColumnName.Trim())
+                             .ToArray();
+                        csvDataModel.ColumnNames = csvColNames;
+
+                        int rowNo = 0;
+                        var columns = csvDataTable.Columns;
+
+                        foreach (var row in csvDataTable.Rows)
+                        {
+                            var cell = new Cell(csvDataModel.ColumnNames);
+                            int colNo = 0;
+                            foreach (var colName in csvDataModel.ColumnNames)
+                            {
+                                var column = columns[colNo];
+                                cell.SetCellInfo(colName, csvDataTable.Rows[rowNo][column].ToString());
+                                colNo++;
+                                //_model.SetProperty(colName, table.Rows[colNo][colName].ToString());
+                            }
+                            rowNo++;
+                            csvDataModel.AddCell(cell);
+                        }
+
+
+                        //var ddd = DataTableToDatabase(csvDataTable, csvDataModel, csvColNames);
+                        //AddRowsToTable(ddd);
+                        /*
+                        using (ApplicationDbContext entities = new ApplicationDbContext())
+                        {
+                            entities.UserCSVDatabase.Add(csvDataModel);
+                            entities.SaveChanges();
+                        }*/
+
+                        Model.SetColumNames(csvDataModel.ColumnNames);
+                        Model.Data = csvDataModel.Data;
+
+                        TempData["Model"] = Model;
+
+
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("File", "This file format is not supported");
+                        return View();
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("File", "Please Upload Your file");
+                }
+            }
+            return View();
+        }
 
         private bool ContainsTime(DateTime modelDate, string searchDate)
         {
@@ -32,27 +143,7 @@ namespace DataYachtz_PLC.Controllers
             return equal;
         }
 
-        public HomeController()
-        {
-            Model = new CsvModel();
-            List<ItemMasterModel> Models;
-            using (var entities = new ApplicationDbContext())
-            {
-                Models = entities.ItemMasters.Select(X => X).ToList();
-
-                foreach (var model in Models)
-                {
-                    var cell = new Cell(Model.ColumnNames);
-                    cell.SetCellInfo(Model.ColumnNames[0], model.PartNumber);
-                    cell.SetCellInfo(Model.ColumnNames[1], model.Specification);
-                    cell.SetCellInfo(Model.ColumnNames[2], model.Description);
-                    cell.SetCellInfo(Model.ColumnNames[3], model.CreatedDate.ToString());
-                    Model.AddCell(cell);
-                }
-            }
-
-        }
-
+       
         public ActionResult JQDataTableClients()
         {
 
@@ -78,11 +169,23 @@ namespace DataYachtz_PLC.Controllers
         }
 
 
+        [HttpGet]
+        public PartialViewResult SomeAction()
+        {
+            return PartialView();
+        }
 
 
         public ActionResult Index()
         {
             //var items = GetItems("", "", "");
+            if(TempData["Model"] != null)
+            {
+                return View(TempData["Model"]);
+            }
+
+            InitTestModel();
+
             return View(Model);
         }
 

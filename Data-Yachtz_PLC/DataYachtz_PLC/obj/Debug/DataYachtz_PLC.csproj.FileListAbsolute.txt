@@ -53,6 +53,7 @@ C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PL
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\Antlr3.Runtime.dll
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\EntityFramework.dll
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\EntityFramework.SqlServer.dll
+C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\LumenWorks.Framework.IO.dll
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\Microsoft.AI.Agent.Intercept.dll
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\Microsoft.AI.DependencyCollector.dll
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\Microsoft.AI.PerfCounterCollector.dll
@@ -84,6 +85,8 @@ C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PL
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\System.Web.WebPages.dll
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\System.Web.WebPages.Razor.dll
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\WebGrease.dll
+C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\LumenWorks.Framework.IO.pdb
+C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\LumenWorks.Framework.IO.xml
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\System.Web.Helpers.xml
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\System.Web.Mvc.xml
@@ -113,7 +116,6 @@ C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PL
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\Microsoft.AI.ServerTelemetryChannel.xml
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\Microsoft.AI.WindowsServer.xml
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\Microsoft.AI.Web.xml
-C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.csprojResolveAssemblyReference.cache
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.Migrations.addItemMasterModel.resources
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.csproj.GenerateResource.cache
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.csproj.CoreCompileInputs.cache
