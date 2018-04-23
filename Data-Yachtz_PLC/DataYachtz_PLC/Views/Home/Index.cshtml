@@ -1,73 +1,45 @@
-﻿@model DataYachtz_PLC.Models.CsvModel
-@{
-    ViewBag.Title = "Home Page";
-}
-@*
-    @Ajax.ActionLink("Open popup", "SomeAction", new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "result", InsertionMode = InsertionMode.Replace, OnSuccess = "openPopup" })<br />
+﻿@model System.Data.DataTable
+@using System.Data;
 
-    <div id="result" style="display:none;">
-        <button class="col-md-1" id="bDuplicate" type="button">Duplicate</button>
-    </div>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#result").dialog({
-                autoOpen: false,
-                title: 'Title',
-                width: 500,
-                height: 'auto',
-                modal: true
-            });
-        });
-        function openPopup() {
-            //$("#result").dialog("open");
-
-        }
-    </script>
-*@
+<h2>@ViewBag.Title.</h2>
 
 <div>
     <br />
-    <center><h3>Database Data</h3></center>
 
+    @*used in jquery function*@
+    @*
+        <button class="stylesheet" id="RemoveRow" type="button">Remove</button>
 
-    <button class="stylesheet" id="RemoveRow" type="button">Remove</button>
+        <button class="stylesheet" id="DuplicateRow" type="button">Duplicate</button>
 
-    <button class="stylesheet" id="DuplicateRow" type="button">Duplicate</button>
-
-    <button class="stylesheet" id="AddRow" type="button">Add</button>
+        <button class="stylesheet" id="AddRow" type="button">Add</button>
+    *@
 
     <table id="tblItems" class="display" cellspacing="0">
         <thead>
             <tr>
-                @for (int i = 0; i < Model.GetSize(); i++)
+                @foreach (DataColumn col in Model.Columns)
                 {
-                    <th>
-                        @Html.DisplayName(Model.ColumnNames[i])
-                    </th>
+                    <th>@col.ColumnName</th>
                 }
             </tr>
         </thead>
         <tbody>
-            @foreach (var cell in Model.Data)
+            @foreach (DataRow row in Model.Rows)
             {
                 <tr>
-                    @for (int i = 0; i < Model.GetSize(); i++)
+                    @foreach (DataColumn col in Model.Columns)
                     {
-                        <td>
-                            @Html.DisplayName(cell.GetCellInfo(Model.ColumnNames[i]))
-                        </td>
+                        <td>@row[col.ColumnName]</td>
                     }
                 </tr>
             }
         </tbody>
         <tfoot>
             <tr>
-                @for (int i = 0; i < Model.GetSize(); i++)
+                @foreach (DataColumn col in Model.Columns)
                 {
-                    <th>
-                        @Html.DisplayName("Search " + Model.ColumnNames[i])
-                    </th>
+                    <th>@col.ColumnName</th>
                 }
             </tr>
         </tfoot>
@@ -84,7 +56,7 @@
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.5/css/select.dataTables.min.css   />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.5/css/select.dataTables.min.css       />
     <link rel="stylesheet" type="text/css" href="../../extensions/Editor/css/editor.dataTables.min.css" />
 
     @* jQuery *@
@@ -116,7 +88,7 @@
 
                 $('#tblItems tfoot th').each(function () {
                     var title = $(this).text();
-                    $(this).html('<input type="text" id="' + '" placeholder="' + title.trim() + '" />');
+                    $(this).html('<input type="text" id="' + '" placeholder="Search ' + title.trim() + '" />');
                 });
 
 
@@ -124,119 +96,75 @@
                     "pagingType": "full_numbers",
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                     "processing": true,
-                   
+
                     "dom": 'Bfrtip',
-                     buttons: [ 
+                    buttons: [
+                        {
+                            text: 'Remove',
+                            action: function () {
+                                table.row('.selected').remove().draw(false);
+                            }
+                        },
+                        {
+                            text: 'Duplicate',
+                            action: function () {
+                                var addRow = table.row('.selected').data();
+                                table.$('tr.selected').removeClass('selected');
+                                table.row.add(addRow).draw();
+                            }
+                        },
+
                         {
                             extend: 'collection',
                             text: 'Export',
                             buttons:
-                            [
-                                 {
-                                     extend: 'copy',
-                                     exportOptions: {
-                                         columns: ':visible'
-                                     }
-                                 },
+                                [
+                                    {
+                                        extend: 'copy',
+                                        exportOptions: {
+                                            columns: ':visible'
+                                        }
+                                    },
 
-                                 {
-                                     extend: 'csv',
-                                     exportOptions: {
-                                         columns: ':visible'
-                                     }
-                                 },
-                                 {
-                                     extend: 'pdf',
-                                     exportOptions: {
-                                         columns: ':visible'
-                                     }
-                                 },
-                                 {
-                                     extend: 'excel',
-                                     exportOptions: {
-                                         columns: ':visible'
-                                     }
-                                 },
-                                 {
-                                     extend: 'print',
-                                     exportOptions: {
-                                         columns: ':visible'
-                                     }
-                                 }
-                            ]
-                         },
+                                    {
+                                        extend: 'csv',
+                                        exportOptions: {
+                                            columns: ':visible'
+                                        }
+                                    },
+                                    {
+                                        extend: 'pdf',
+                                        exportOptions: {
+                                            columns: ':visible'
+                                        }
+                                    },
+                                    {
+                                        extend: 'excel',
+                                        exportOptions: {
+                                            columns: ':visible'
+                                        }
+                                    },
+                                    {
+                                        extend: 'print',
+                                        exportOptions: {
+                                            columns: ':visible'
+                                        }
+                                    }
+                                ]
+                        },
 
                         'colvis'
                     ],
 
                     columnDefs: [{
-                       // targets: -1,
+                        // targets: -1,
                         visible: false
                     }],
 
-                     "dom": 'lBfrtip'
-                   
+                    "dom": 'lBfrtip'
+                    //"dom": '<"toolbar">frtip' // custom toolbar call
                 });
-              
 
-             
-
-                /*
-               editor = new $.fn.DataTable.Editor({
-                   ajax: "../php/staff.php",
-                   table: "#tblItems",
-                   fields: [{
-                       label: "PartNumber:",
-                       name: "PartNumber"
-                   }, {
-                       label: "Specification:",
-                       name: "Specification"
-                   }, {
-                       label: "Description:",
-                       name: "Description"
-                   }, {
-                       label: "CreatedDate:",
-                       name: "CreatedDate"
-                   }
-                   ]
-               });
-
-               $('#tblItems').on('click', 'tbody td:not(:first-child)', function (e) {
-                   editor.inline(this, {
-                       submit: 'allIfChanged'
-                   });
-               });
-
-
-              $('#tblItems').DataTable({
-                  dom: "Bfrtip",
-                  ajax: "../php/staff.php",
-                  columns: [
-                      {
-                          data: null,
-                          defaultContent: '',
-                          className: 'select-checkbox',
-                          orderable: false
-                      },
-                      { data: "first_name" },
-                      { data: "last_name" },
-                      { data: "position" },
-                      { data: "office" },
-                      { data: "start_date" },
-                      { data: "salary", render: $.fn.dataTable.render.number(',', '.', 0, '$') }
-                  ],
-                  order: [1, 'asc'],
-                  select: {
-                      style: 'os',
-                      selector: 'td:first-child'
-                  },
-                  buttons: [
-                      { extend: "create", editor: editor },
-                      { extend: "edit", editor: editor },
-                      { extend: "remove", editor: editor }
-                  ]
-              });
-           */
 
 
                 // search each column
@@ -253,6 +181,8 @@
 
                 });
 
+                // create custom toolbar
+                //$("div.toolbar").html('<b>Custom tool bar! Text/images etc.</b>');
 
 
                 // enables selection of rows
@@ -266,7 +196,7 @@
                     }
                 });
 
-
+                /*
                 // remove row
                 $('#RemoveRow').click(function () {
                     table.row('.selected').remove().draw(false);
@@ -290,7 +220,7 @@
                     ]).draw();
 
                 });
-
+                */
 
 
             });

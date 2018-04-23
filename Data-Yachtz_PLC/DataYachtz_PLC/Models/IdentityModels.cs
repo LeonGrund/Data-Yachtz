@@ -16,6 +16,8 @@ namespace DataYachtz_PLC.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public string CsvFileNames { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

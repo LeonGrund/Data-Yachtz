@@ -4,18 +4,42 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using DataYachtz_PLC.Models;
 using LumenWorks.Framework.IO.Csv;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace DataYachtz_PLC.Controllers
 {
     public class HomeController : Controller
     {
+        private ApplicationUserManager _userManager;
+        public CsvModel Model;
+
         public HomeController()
         {
             Model = new CsvModel();
+     
+        }
+
+        public HomeController(ApplicationUserManager userManager)
+        {
+            UserManager = userManager;
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
         }
 
         private void InitTestModel()
@@ -38,8 +62,20 @@ namespace DataYachtz_PLC.Controllers
             }
         }
 
-        public CsvModel Model;
+        [Authorize]
+        public async Task<ActionResult> CSVs()
+        {
+            var userEmail = User.Identity.GetUserName();
+            var userEntity = await UserManager.FindByEmailAsync(userEmail);
 
+            List<string> userCSVs = new List<string>();
+            if (userEntity.CsvFileNames != null)
+            {
+                userCSVs = userEntity.CsvFileNames.Trim().Split(',').ToList();
+            }
+  
+            return View(userCSVs);
+        }
 
         public ActionResult Upload()
         {
@@ -48,7 +84,7 @@ namespace DataYachtz_PLC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Upload(HttpPostedFileBase upload)
+        public async Task<ActionResult> Upload(HttpPostedFileBase upload)
         {
             if (ModelState.IsValid)
             {
@@ -61,6 +97,43 @@ namespace DataYachtz_PLC.Controllers
                         Stream stream = upload.InputStream;
                         DataTable csvDataTable = new DataTable();
 
+                        var csvName = upload.FileName.Trim();
+
+                        var userEmail = User.Identity.GetUserName();
+                        if (userEmail != "")
+                        {
+                           
+                            var userEntity = await UserManager.FindByEmailAsync(userEmail);
+      
+                            List<string> userCSVs = new List<string>();
+                           
+                            if (userEntity.CsvFileNames != null)
+                            {
+                                var csvString = userEntity.CsvFileNames.Trim();
+                                
+                                userCSVs = csvString.Split(',').ToList();
+                                if (!userCSVs.Contains(csvName))
+                                {
+                                    var newCsv = "," + csvName;
+                                    csvString += newCsv;
+
+                                    userEntity.CsvFileNames = csvString;
+                                    UserManager.Update(userEntity);
+                                }  
+                            }
+                            else
+                            {
+                                // add the first CSV file name to user
+                                userEntity.CsvFileNames = csvName;
+                                UserManager.Update(userEntity);
+                            }
+
+                            // save CSV file
+                            var path = Path.Combine(this.Request.PhysicalApplicationPath, csvName);
+                            upload.SaveAs(path);
+                        }
+                       
+
                         var csvDataModel = new CsvModel();    //CREATE MODEL
                         //var csvDataList = new List<string>();           // List for the model
 
@@ -71,6 +144,8 @@ namespace DataYachtz_PLC.Controllers
 
                         }
 
+                        // FOR SERVER SIDE SORTING etc
+                        /*
                         string[] csvColNames = csvDataTable.Columns.Cast<DataColumn>()
                              .Select(x => x.ColumnName.Trim())
                              .ToArray();
@@ -93,7 +168,7 @@ namespace DataYachtz_PLC.Controllers
                             rowNo++;
                             csvDataModel.AddCell(cell);
                         }
-
+                        */
 
                         //var ddd = DataTableToDatabase(csvDataTable, csvDataModel, csvColNames);
                         //AddRowsToTable(ddd);
@@ -104,13 +179,15 @@ namespace DataYachtz_PLC.Controllers
                             entities.SaveChanges();
                         }*/
 
+                        /*
                         Model.SetColumNames(csvDataModel.ColumnNames);
                         Model.Data = csvDataModel.Data;
+                        */
 
-                        TempData["Model"] = Model;
+                        TempData["Model"] = csvDataTable;
 
 
-                        return RedirectToAction("Index");
+                        return RedirectToAction("Index", new { csvName = csvName });
                     }
                     else
                     {
@@ -149,25 +226,20 @@ namespace DataYachtz_PLC.Controllers
 
             return View(Model);
         }
-
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
 
             return View();
         }
-
         public ActionResult Contact()
         {
             return View(Model);
         }
-
-
         private ApplicationDbContext GetEntities()
         {
             return new ApplicationDbContext();
         }
-
 
         [HttpGet]
         public PartialViewResult SomeAction()
@@ -176,18 +248,33 @@ namespace DataYachtz_PLC.Controllers
         }
 
 
-        public ActionResult Index()
+        public ActionResult Index(string csvName)
         {
+            ViewBag.Titel = csvName;
+
             //var items = GetItems("", "", "");
-            if(TempData["Model"] != null)
+            if (TempData["Model"] != null)
             {
                 return View(TempData["Model"]);
             }
 
-            InitTestModel();
+            if (csvName != null)
+            {
+                //TODO: load csv with csvName
+                //DataTable Model = new DataTable();
+            }
+          
+
+            ViewBag.Titel = "Example CSV";
+
+            // TODO: populate datatable model with example data
+            DataTable Model = new DataTable();
 
             return View(Model);
         }
+
+
+
 
         // With server side search Sorting
         [HttpPost]
@@ -303,11 +390,6 @@ namespace DataYachtz_PLC.Controllers
 
             return Json(new { draw = Draw, recordsFiltered = TotalRecords, recordsTotal = TotalRecords, data = Model.Data }, JsonRequestBehavior.AllowGet);
         }
-
-
-
-
-
 
         public ActionResult Items()
         {

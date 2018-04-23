@@ -203,6 +203,10 @@
     <Compile Include="Migrations\201804191642495_addItemMasterModel.Designer.cs">
       <DependentUpon>201804191642495_addItemMasterModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804231817486_added user field.cs" />
+    <Compile Include="Migrations\201804231817486_added user field.Designer.cs">
+      <DependentUpon>201804231817486_added user field.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DataModels.cs" />
@@ -696,6 +700,7 @@
     <Content Include="Views\Home\JQDataTableClients.cshtml" />
     <Content Include="Views\Home\Upload.cshtml" />
     <Content Include="Views\Home\SomeAction.cshtml" />
+    <Content Include="Views\Home\CSVs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -716,6 +721,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201804191642495_addItemMasterModel.resx">
       <DependentUpon>201804191642495_addItemMasterModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804231817486_added user field.resx">
+      <DependentUpon>201804231817486_added user field.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
