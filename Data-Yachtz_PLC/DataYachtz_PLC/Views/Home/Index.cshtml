@@ -75,10 +75,7 @@
 
     <style type="text/css">
         .addRow {
-             <input type="text" class="stylesheet" name="PartNumber" value=" "/> 
-             <input type="text" class="stylesheet" name="Specification"/>
-             <input type="text" class="stylesheet" name="Description"/>
-             <input type="text" class="stylesheet" name="CreatedDate"/>
+            <input type="text" class="stylesheet" name="PartNumber" value=" "/> <input type="text" class="stylesheet" name="Specification"/> <input type="text" class="stylesheet" name="Description"/> <input type="text" class="stylesheet" name="CreatedDate"/>
         }
     </style>
 
@@ -87,7 +84,7 @@
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.5/css/select.dataTables.min.css  />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.5/css/select.dataTables.min.css   />
     <link rel="stylesheet" type="text/css" href="../../extensions/Editor/css/editor.dataTables.min.css" />
 
     @* jQuery *@
@@ -105,9 +102,9 @@
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 
-        @*<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-1.12.4.js"></script>
-            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
-                <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>*@
+        <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        @*< <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
+            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>*@
 
 
 
@@ -127,90 +124,122 @@
                     "pagingType": "full_numbers",
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                     "processing": true,
-                    "dom": 'lBfrtip',
-                    "buttons": [
-
+                   
+                    "dom": 'Bfrtip',
+                     buttons: [ 
                         {
                             extend: 'collection',
                             text: 'Export',
+                            buttons:
+                            [
+                                 {
+                                     extend: 'copy',
+                                     exportOptions: {
+                                         columns: ':visible'
+                                     }
+                                 },
 
-                            buttons: [
-                                'copy',
-                                'excel',
-                                'csv',
-                                'pdf',
-                                'print'
+                                 {
+                                     extend: 'csv',
+                                     exportOptions: {
+                                         columns: ':visible'
+                                     }
+                                 },
+                                 {
+                                     extend: 'pdf',
+                                     exportOptions: {
+                                         columns: ':visible'
+                                     }
+                                 },
+                                 {
+                                     extend: 'excel',
+                                     exportOptions: {
+                                         columns: ':visible'
+                                     }
+                                 },
+                                 {
+                                     extend: 'print',
+                                     exportOptions: {
+                                         columns: ':visible'
+                                     }
+                                 }
                             ]
-                        }
+                         },
 
-                    ]
+                        'colvis'
+                    ],
 
+                    columnDefs: [{
+                       // targets: -1,
+                        visible: false
+                    }],
 
-
-
+                     "dom": 'lBfrtip'
+                   
                 });
+              
 
+             
 
-
-                 /*
-                editor = new $.fn.DataTable.Editor({
-                    ajax: "../php/staff.php",
-                    table: "#tblItems",
-                    fields: [{
-                        label: "PartNumber:",
-                        name: "PartNumber"
-                    }, {
-                        label: "Specification:",
-                        name: "Specification"
-                    }, {
-                        label: "Description:",
-                        name: "Description"
-                    }, {
-                        label: "CreatedDate:",
-                        name: "CreatedDate"
-                    }
-                    ]
-                });
-
-                $('#tblItems').on('click', 'tbody td:not(:first-child)', function (e) {
-                    editor.inline(this, {
-                        submit: 'allIfChanged'
-                    });
-                });
-
-               
-               $('#tblItems').DataTable({
-                   dom: "Bfrtip",
+                /*
+               editor = new $.fn.DataTable.Editor({
                    ajax: "../php/staff.php",
-                   columns: [
-                       {
-                           data: null,
-                           defaultContent: '',
-                           className: 'select-checkbox',
-                           orderable: false
-                       },
-                       { data: "first_name" },
-                       { data: "last_name" },
-                       { data: "position" },
-                       { data: "office" },
-                       { data: "start_date" },
-                       { data: "salary", render: $.fn.dataTable.render.number(',', '.', 0, '$') }
-                   ],
-                   order: [1, 'asc'],
-                   select: {
-                       style: 'os',
-                       selector: 'td:first-child'
-                   },
-                   buttons: [
-                       { extend: "create", editor: editor },
-                       { extend: "edit", editor: editor },
-                       { extend: "remove", editor: editor }
+                   table: "#tblItems",
+                   fields: [{
+                       label: "PartNumber:",
+                       name: "PartNumber"
+                   }, {
+                       label: "Specification:",
+                       name: "Specification"
+                   }, {
+                       label: "Description:",
+                       name: "Description"
+                   }, {
+                       label: "CreatedDate:",
+                       name: "CreatedDate"
+                   }
                    ]
                });
-            */
+
+               $('#tblItems').on('click', 'tbody td:not(:first-child)', function (e) {
+                   editor.inline(this, {
+                       submit: 'allIfChanged'
+                   });
+               });
 
 
+              $('#tblItems').DataTable({
+                  dom: "Bfrtip",
+                  ajax: "../php/staff.php",
+                  columns: [
+                      {
+                          data: null,
+                          defaultContent: '',
+                          className: 'select-checkbox',
+                          orderable: false
+                      },
+                      { data: "first_name" },
+                      { data: "last_name" },
+                      { data: "position" },
+                      { data: "office" },
+                      { data: "start_date" },
+                      { data: "salary", render: $.fn.dataTable.render.number(',', '.', 0, '$') }
+                  ],
+                  order: [1, 'asc'],
+                  select: {
+                      style: 'os',
+                      selector: 'td:first-child'
+                  },
+                  buttons: [
+                      { extend: "create", editor: editor },
+                      { extend: "edit", editor: editor },
+                      { extend: "remove", editor: editor }
+                  ]
+              });
+           */
 
+
+                // search each column
                 table.columns().every(function () {
 
                     var that = this;
@@ -226,7 +255,7 @@
 
 
 
-
+                // enables selection of rows
                 $('#tblItems tbody').on('click', 'tr', function () {
                     if ($(this).hasClass('selected')) {
                         $(this).removeClass('selected');
@@ -238,17 +267,19 @@
                 });
 
 
+                // remove row
                 $('#RemoveRow').click(function () {
                     table.row('.selected').remove().draw(false);
                 });
 
+                // clone row
                 $('#DuplicateRow').click(function () {
                     var addRow = table.row('.selected').data();
                     table.$('tr.selected').removeClass('selected');
                     table.row.add(addRow).draw();
                 });
 
-                
+                // add row
                 $('#AddRow').on('click', function () {
 
                     table.row.add([
@@ -257,7 +288,7 @@
                         'col3',
                         'col4'
                     ]).draw();
-                    
+
                 });
 
 
