@@ -1,12 +1,14 @@
 ﻿
 @{
-    ViewBag.Title = "Upload CSV";
+    ViewBag.Title = "Upload";
 }
 
-<h2> ViewBag.Title.</h2>
+<h2>Upload</h2>
 
 @using (Html.BeginForm("Upload", "Home", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
+    <h4>Upload a CSV file.</h4>
+    <hr />
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
 

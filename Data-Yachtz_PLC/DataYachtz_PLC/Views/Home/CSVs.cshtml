@@ -1,16 +1,16 @@
 ﻿@model List<string>
 @{
-    ViewBag.Title = "Edit CSV";
+    ViewBag.Title = "CSV Files";
 }
 
 
-<h2>@ViewBag.Title.</h2>
+<h2>@ViewBag.Title</h2>
 
 <div class="row">
     <div class="col-md-8">
         <section id="csvForm">
             @Html.AntiForgeryToken()
-            <h4>Click on CSV file name to edit.</h4>
+            <h4>Click on a file name to edit.</h4>
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             @*

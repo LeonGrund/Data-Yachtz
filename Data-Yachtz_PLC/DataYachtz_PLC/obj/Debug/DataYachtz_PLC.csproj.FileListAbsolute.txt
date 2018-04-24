@@ -117,10 +117,9 @@ C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PL
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\Microsoft.AI.WindowsServer.xml
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\bin\Microsoft.AI.Web.xml
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.Migrations.addItemMasterModel.resources
+C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.Migrations.addeduserfield.resources
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.csproj.GenerateResource.cache
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.csproj.CoreCompileInputs.cache
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.csproj.CopyComplete
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.dll
 C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.pdb
-C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.csprojResolveAssemblyReference.cache
-C:\Users\leonc\OneDrive\Documents\Gits\Data-Yachtz\Data-Yachtz_PLC\DataYachtz_PLC\obj\Debug\DataYachtz_PLC.Migrations.addeduserfield.resources

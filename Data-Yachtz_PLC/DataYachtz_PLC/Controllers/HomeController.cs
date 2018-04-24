@@ -250,11 +250,11 @@ namespace DataYachtz_PLC.Controllers
 
         public ActionResult Index(string csvName)
         {
-            ViewBag.Titel = csvName;
 
             //var items = GetItems("", "", "");
             if (TempData["Model"] != null)
             {
+                ViewBag.Message = "Start editing " + csvName;
                 return View(TempData["Model"]);
             }
 
@@ -262,13 +262,38 @@ namespace DataYachtz_PLC.Controllers
             {
                 //TODO: load csv with csvName
                 //DataTable Model = new DataTable();
+                ViewBag.Titel = csvName;
+                ViewBag.Message = "Start editing " + csvName;
+                DataTable csvDataTable = new DataTable();
+                var path = Path.Combine(this.Request.PhysicalApplicationPath, csvName);
+                var streamReader = new StreamReader(@path);
+                Stream stream = streamReader.BaseStream;
+
+                using (CsvReader csvReader =
+                            new CsvReader(new StreamReader(stream), true))
+                {
+                    csvDataTable.Load(csvReader);
+
+                }
+                return View(csvDataTable);
+
             }
-          
+
 
             ViewBag.Titel = "Example CSV";
-
-            // TODO: populate datatable model with example data
+            ViewBag.Message = "Start editing example.csv";
             DataTable Model = new DataTable();
+            var exPath = Path.Combine(this.Request.PhysicalApplicationPath, "example.csv");
+            var exStreamReader = new StreamReader(@exPath);
+            Stream exStream = exStreamReader.BaseStream;
+
+            using (CsvReader csvReader =
+                        new CsvReader(new StreamReader(exStream), true))
+            {
+                Model.Load(csvReader);
+
+            }
+
 
             return View(Model);
         }
