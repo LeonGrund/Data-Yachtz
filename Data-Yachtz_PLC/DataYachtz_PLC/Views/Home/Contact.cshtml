@@ -1,17 +1,91 @@
-﻿@{
+﻿@model DataYachtz_PLC.Models.CsvModel
+@{
     ViewBag.Title = "Contact";
 }
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <script src="jquery-1.11.2.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css" />
 
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+    <link href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/DataTables/css/dataTables.jqueryui.css" rel="stylesheet" />
+
+    @section Scripts{
+        <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js">
+        </script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#datatable').DataTable({
+
+                    "pagingType": "full_numbers",
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    "scrollY": "400px"
+
+
+                });
+
+            });
+        </script>
+    }
+
+</head>
+<body style="font-family: Arial">
+    <form id="form1" runat="server">
+        <div style=border: 1px solid black; padding: 5px">
+            <br />
+            <center><h3>Database Data</h3></center>
+            <table id="datatable"
+                   class="table table-condensed table-striped table-hover">
+                <thead>
+                    <tr>
+                        @for (int i = 0; i < Model.GetSize(); i++)
+                        {
+                            <th>
+                                @Html.DisplayName(Model.ColumnNames[i])
+                            </th>
+                        }
+                        <th></th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var cell in Model.Data)
+                    {
+                        <tr>
+                            @for (int i = 0; i < Model.GetSize(); i++)
+                            {
+                            <td>
+                                @Html.DisplayName(cell.GetCellInfo(Model.ColumnNames[i]))
+                            </td>
+                            }
+                            @*
+                                <td>
+                                    @Html.ActionLink(Resources.Edit, "Edit",
+                                            new { id = item.ID }, htmlAttributes: new
+                                            {
+                                                @class = "btn btn-default btn-sm"
+                                            })
+                                </td>*@
+                        </tr>
+                    }
+
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        @for (int i = 0; i < Model.GetSize(); i++)
+                        {
+                            <th>@Model.ColumnNames[i]</th>
+                        }
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </form>
+</body>
+</html>
