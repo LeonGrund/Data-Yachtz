@@ -21,9 +21,8 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    @*<li>@Html.ActionLink("Home", "Index", "Home")</li>*@
                     <li>@Html.ActionLink("Upload", "Upload", "Home")</li>
-
+                    <li>@Html.ActionLink("Demo CSV", "Edit", "Home")</li>
                     @if (Context.User.Identity.IsAuthenticated)
     {
                 <li>@Html.ActionLink("CSVs ", "CSVs", "Home")</li>

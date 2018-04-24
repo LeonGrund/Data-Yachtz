@@ -42,6 +42,11 @@ namespace DataYachtz_PLC.Controllers
             }
         }
 
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         private void InitTestModel()
         {
             Model = new CsvModel();
@@ -187,7 +192,7 @@ namespace DataYachtz_PLC.Controllers
                         TempData["Model"] = csvDataTable;
 
 
-                        return RedirectToAction("Index", new { csvName = csvName });
+                        return RedirectToAction("Edit", new { csvName = csvName });
                     }
                     else
                     {
@@ -248,7 +253,7 @@ namespace DataYachtz_PLC.Controllers
         }
 
 
-        public ActionResult Index(string csvName)
+        public ActionResult Edit(string csvName)
         {
 
             //var items = GetItems("", "", "");

@@ -23,7 +23,7 @@
             @foreach (var csvName in Model)
             {
                 <p>
-                    @Html.ActionLink(csvName, "Index", new { csvName = csvName })
+                    @Html.ActionLink(csvName, "Edit", new { csvName = csvName })
                 </p>
             }
 

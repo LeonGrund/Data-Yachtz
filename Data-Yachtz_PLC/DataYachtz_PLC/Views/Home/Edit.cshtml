@@ -1,0 +1,232 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h4>@ViewBag.Message</h4>
+<hr />
+
+@*
+    <button class="stylesheet" id="RemoveRow" type="button"></button>
+
+    <button class="stylesheet" id="DuplicateRow" type="button"></button>
+
+    <button class="stylesheet" id="AddRow" type="button"></button>
+*@
+
+<table id="tblItems" class="display" cellspacing="0" width="100%" style="display:none">
+    <thead>
+        <tr>
+            @foreach (DataColumn col in Model.Columns)
+            {
+                <th>@col.ColumnName</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (DataRow row in Model.Rows)
+        {
+            <tr>
+                @foreach (DataColumn col in Model.Columns)
+                {
+                    <td>@row[col.ColumnName]</td>
+                }
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            @foreach (DataColumn col in Model.Columns)
+            {
+                <th>@col.ColumnName</th>
+            }
+            
+        </tr>
+    </tfoot>
+</table>
+
+
+
+@* jQuery DataTables css *@
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.5/css/select.dataTables.min.css               />
+<link rel="stylesheet" type="text/css" href="../../extensions/Editor/css/editor.dataTables.min.css" />
+
+@* jQuery *@
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="~/Scripts/jquery-1.12.4.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.9/js/dataTables.select.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.jqueryui.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+    <script src="~/Scripts/jquery.dataTables.columnFilter.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    @*< <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>*@
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+
+
+
+    <script type="text/javascript" src="https://cdn.datatables.net/r/dt/jq-2.1.4,jszip-2.5.0,pdfmake-0.1.18,dt-1.10.9,af-2.0.0,b-1.0.3,b-colvis-1.0.3,b-html5-1.0.3,b-print-1.0.3,se-1.0.1/datatables.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+           
+
+            $('#tblItems tfoot th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text" id="' + '" placeholder="Search ' + title.trim() + '" />');
+            });
+
+           
+            var table = $('#tblItems').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                "processing": true,
+                "dom": 'Bfrtip',
+                buttons: [
+                    {
+                        text: 'Remove',
+                        action: function () {
+                            table.row('.selected').remove().draw(false);
+                        }
+                    },
+                    {
+                        text: 'Duplicate',
+                        action: function () {
+                            var addRow = table.row('.selected').data();
+                            table.$('tr.selected').removeClass('selected');
+                            table.row.add(addRow).draw();
+                        }
+                    },
+
+                    {
+                        extend: 'collection',
+                        text: 'Export',
+                        buttons:
+                            [
+                                {
+                                    extend: 'copy',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+
+                                {
+                                    extend: 'csv',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'pdf',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'excel',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'print',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                }
+                            ]
+                    },
+
+                    'colvis'
+                ],
+
+                columnDefs: [{
+                    // targets: -1,
+                    visible: false
+                }],
+
+                "dom": 'lBfrtip'
+                //"dom": '<"toolbar">frtip' // custom toolbar call
+            });
+           
+            $('#tblItems').show();
+
+
+            // search each column
+            table.columns().every(function () {
+
+                var that = this;
+                $('input', this.footer()).on('keyup change', function () {
+                    if (that.search() !== this) {
+                        that
+                            .search(this.value)
+                            .draw();
+                    }
+                });
+
+            });
+
+            // create custom toolbar
+            //$("div.toolbar").html('<b>Custom tool bar! Text/images etc.</b>');
+
+
+            // enables selection of rows
+            $('#tblItems tbody').on('click', 'tr', function () {
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                }
+                else {
+                    table.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+            });
+
+            /*
+            // remove row
+            $('#RemoveRow').click(function () {
+                table.row('.selected').remove().draw(false);
+            });
+
+            // clone row
+            $('#DuplicateRow').click(function () {
+                var addRow = table.row('.selected').data();
+                table.$('tr.selected').removeClass('selected');
+                table.row.add(addRow).draw();
+            });
+
+            // add row
+            $('#AddRow').on('click', function () {
+
+                table.row.add([
+                    'col1',
+                    'col2',
+                    'col3',
+                    'col4'
+                ]).draw();
+
+            });
+            */
+
+
+        });
+
+    </script>
+}
+
