@@ -1,6 +1,6 @@
 
 # **Data-Yachtz**
-## [App is published on Azure]: http://datayachtz.azurewebsites.net/
+[App is published on Azure]: http://datayachtz.azurewebsites.net/
 &nbsp;
 
 
